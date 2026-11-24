@@ -1,0 +1,7 @@
+model,default_threshold,default_loss_dollars,optimal_threshold,optimized_loss_dollars,net_dollar_savings,savings_percentage,default_fp,default_fn,optimal_fp,optimal_fn
+LightGBM,0.5,489960.0,0.75,381516.0,108444.0,22.13,1147,1430,351,2708
+XGBoost,0.5,505542.0,0.74,403308.0,102234.0,20.22,1168,1521,340,2954
+Random Forest,0.5,436092.0,0.66,407160.0,28932.0,6.63,775,1996,259,3230
+K-Nearest Neighbors,0.5,572520.0,0.82,410028.0,162492.0,28.38,1276,1860,155,3564
+Multilayer Perceptron,0.5,584820.0,0.85,434730.0,150090.0,25.66,1368,1710,271,3465
+Decision Tree,0.5,616710.0,0.76,473904.0,142806.0,23.16,1459,1755,440,3352

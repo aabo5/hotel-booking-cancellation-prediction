@@ -1,0 +1,10 @@
+Feature,Test Name,Test Statistic,p-value,Effect Size Metric,Effect Size Value,Decision,Domain Meaning
+deposit_type,Pearson Chi-Square Test of Independence,"Chi2 = 27,639.52 (df=2)",< 1e-300,Cramér's V,0.4815,Reject H0,Strongest categorical predictor. Non-refundable deposits have extreme cancellation rate (99.4%) due to group block dumping.
+market_segment,Pearson Chi-Square Test of Independence,"Chi2 = 8,499.93 (df=7)",< 1e-300,Cramér's V,0.267,Reject H0,Online TAs (36.7%) and Groups (61.1%) cancel far more frequently than Direct (15.3%) and Corporate (18.7%).
+distribution_channel,Pearson Chi-Square Test of Independence,"Chi2 = 3,741.13 (df=4)",< 1e-300,Cramér's V,0.1772,Reject H0,TA/TO distribution channels exhibit substantially higher cancellation proportion than Direct or Corporate channels.
+hotel,Pearson Chi-Square Test of Independence,"Chi2 = 2,239.04 (df=1)",< 1e-300,Cramér's V,0.1371,Reject H0,City Hotel experiences significantly higher cancellation rate (41.7%) than Resort Hotel (27.8%).
+customer_type,Pearson Chi-Square Test of Independence,"Chi2 = 2,224.47 (df=3)",< 1e-300,Cramér's V,0.1366,Reject H0,Transient customers cancel substantially more often (40.7%) than Transient-Party (25.4%) or Group bookings.
+lead_time,Welch's Two-Sample t-Test,t = 98.94,< 1e-300,Cohen's d,0.6342,Reject H0,Moderate-to-large effect size (d=0.634). Canceled bookings average 144.9 days in advance vs. 80.1 days for non-canceled.
+lead_time,Mann-Whitney U Test,U = 2.28e+09,< 1e-300,Rank Biserial Correlation,0.3782,Reject H0,Non-parametric confirmation: Median lead time for canceled bookings is 113 days vs. 45 days for completed stays (+151%).
+adr,Welch's Two-Sample t-Test,t = 16.72,1.21e-62,Cohen's d,0.0986,Reject H0,"Statistically significant due to large N, but practical effect size is negligible (d=0.099). Room rate is not a primary churn driver."
+adr,Mann-Whitney U Test,U = 1.76e+09,1.63e-66,Rank Biserial Correlation,0.0596,Reject H0,"Median ADR for canceled bookings is only $3.60 higher ($96.30 vs. $92.70), confirming negligible practical divergence."

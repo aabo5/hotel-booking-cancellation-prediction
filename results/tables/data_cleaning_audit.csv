@@ -1,0 +1,6 @@
+Metric,Before Cleaning,After Cleaning,Action Taken
+Total Records,"119,390","119,208",Baseline
+Ghost Bookings (0 guests),180,0,Filtered 180 records
+ADR Negative Typos,1,0,Filtered 1 record (-$6.38)
+"ADR Extreme Typos (> $5,000)",1,0,"Filtered 1 record ($5,400)"
+Missing Values (All),"129,425",0,"Imputed (0 for numeric, Unknown for cat)"

@@ -1,0 +1,4 @@
+Partition,Total Samples,Non-Canceled (0),Canceled (1),Cancellation Rate (%)
+Full Dataset,"119,208","75,010","44,198",37.0764%
+Training Set (80%),"95,366","60,008","35,358",37.0761%
+Test Holdout (20%),"23,842","15,002","8,840",37.0774%

@@ -1,0 +1,6 @@
+Feature,Frequency (%),Cancel Rate (Flag=0),Cancel Rate (Flag=1),Absolute Delta (%)
+has_previous_cancellations,5.44%,33.94%,91.68%,57.74%
+room_type_changed,12.41%,41.56%,5.41%,36.15%
+has_special_requests,41.11%,47.77%,21.76%,26.01%
+has_booking_changes,15.08%,40.87%,15.74%,25.13%
+is_family,7.83%,37.26%,34.92%,2.34%
