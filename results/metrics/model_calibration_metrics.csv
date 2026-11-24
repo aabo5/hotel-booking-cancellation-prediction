@@ -1,7 +1,0 @@
-model,brier_score,roc_auc,pr_auc
-LightGBM,0.075,0.9621,0.9433
-XGBoost,0.0785,0.9588,0.9381
-Random Forest,0.0845,0.956,0.9365
-Multilayer Perceptron,0.0895,0.9466,0.9232
-Decision Tree,0.0934,0.9373,0.9005
-K-Nearest Neighbors,0.0937,0.9363,0.9138

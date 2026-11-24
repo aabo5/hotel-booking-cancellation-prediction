@@ -1,5 +1,0 @@
-Column Name,Data Type,Missing Count,Missing Percentage (%)
-company,float64,112593,94.30689337465449
-agent,float64,16340,13.686238378423655
-country,str,488,0.40874445095904177
-children,float64,4,0.003350364352123293

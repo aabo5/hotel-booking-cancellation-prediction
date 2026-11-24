@@ -221,3 +221,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Trained model binaries (exceed GitHub 100MB limit)
+models/*.joblib
+!models/.gitkeep

@@ -1,280 +1,266 @@
-# 🏨 Hotel Booking Cancellation Prediction Using Machine Learning
-> **An Empirical Data Science & Revenue Management Research Study**  
-> *Fatih Sultan Mehmet Vakıf University (FSMVU) — Data Science Curriculum*
+# Hotel Booking Cancellation Prediction
 
-[![Python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.9.1-orange.svg?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![LightGBM](https://img.shields.io/badge/LightGBM-4.7.0-brightgreen.svg)](https://lightgbm.readthedocs.io/)
-[![XGBoost](https://img.shields.io/badge/XGBoost-3.4.1-red.svg)](https://xgboost.readthedocs.io/)
-[![Tests](https://img.shields.io/badge/pytest-9%20passed%20(100%25)-success.svg?logo=pytest&logoColor=white)](tests/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+A university Data Science project that investigates why hotel bookings get canceled and tests 6 machine learning algorithms to predict cancellations before they happen.
 
 ---
 
-## 📌 Executive Overview
+## 1. What is this Project About?
 
-Booking cancellations represent one of the most severe operational and financial vulnerabilities in the modern hospitality industry. Across global hotel portfolios, approximately **37% of reservations are canceled**, leaving perishable room inventory vacant overnight or forcing aggressive overbooking policies that risk severe customer walk penalties ($C_{\text{walk}} \approx \$300$).
+Hotels lose significant revenue when guests book rooms and cancel at the last minute. The goal of this project is to:
+1. Understand which factors are most connected to booking cancellations (e.g., lead time, deposit type, country).
+2. Train and compare 6 different Machine Learning algorithms to see which one predicts cancellations best.
+3. Test if tuning hyperparameters actually improves model performance across all evaluation metrics.
+4. Check if feature selection or PCA (dimensionality reduction) helps or hurts model accuracy.
 
-This repository presents a university research study investigating the behavioral, temporal, and distribution drivers of hotel booking cancellations. Leveraging the **Kaggle Hotel Booking Demand Dataset** ($N = 119,390$ records across Resort and City hotels), we implement an end-to-end, scientifically validated machine learning workflow:
-1. **Exploratory & Statistical Analysis**: Formally testing associations via Pearson $\chi^2$, Cramér's $V$, Welch's $t$-tests, Mann-Whitney $U$, and Spearman rank correlations.
-2. **Leakage-Free Preprocessing**: Permanent excision of post-outcome PMS logging fields (`reservation_status`, `reservation_status_date`), domain anomaly cleaning (180 ghost bookings, 2 ADR typos), and stratified 80/20 train/test partitioning.
-3. **Six-Model Machine Learning Benchmark**: Training and evaluating **K-Nearest Neighbors (KNN)**, **Decision Tree**, **Random Forest**, **XGBoost**, **LightGBM**, and **Multi-Layer Perceptron (MLP)** across default baselines and systematic hyperparameter tuning.
-4. **Dimensionality Reduction Experiments**: Comparing Supervised Feature Selection ($k \in [10, 250]$) against Unsupervised Principal Component Analysis (PCA).
-5. **Operational Economics**: Reliability calibration and asymmetric decision threshold optimization minimizing real-world hospitality loss.
-6. **Publication Monograph**: A full-length, 23-section Academic Research Paper (`report/research_paper.md`, ~19,800 words, zero fabrication).
-
----
-
-## 🏆 Key Research Findings & Benchmarks
-
-| Metric / Analysis | Empirical Finding / Champion | Operational / Scientific Significance |
-|:---|:---|:---|
-| **Global Champion Model** | **Tuned LightGBM** (`ROC-AUC = 0.9621`, `PR-AUC = 0.9433`, `Acc = 89.19%`, `F1 = 0.8519`) | Trained in **$2.73$ seconds** with $< 8\,\mu\text{s}$ per-query latency; lowest Brier calibration error ($0.0750$). |
-| **Operational Cost Optimization** | **Optimal Threshold $p^* = 0.75$** | Slashes False Positives by **$69.4\%$**, yielding **$\mathbf{\$108,444}$ net financial savings per quarter** (22.13% loss reduction) over standard $p=0.50$. |
-| **The Non-Refundable Deposit Paradox** | `cat__deposit_type_Non Refund` ($\chi^2 = 27,639.52$, Cramér's $V = 0.4815$) | Non-refundable bookings exhibit a **$99.36\%$ cancellation rate** due to wholesale travel agencies dumping unsold group block allocations prior to cut-off dates. |
-| **Lead Time Hazard** | `num__lead_time` ($t = 98.94$, Cohen's $d = 0.6342$) | Canceled reservations are booked an average of **$144.9$ days in advance** vs. **$80.1$ days** for completed stays ($+64.8$ days window of vulnerability). |
-| **Room Rate Fallacy** | `num__adr` ($d = 0.0986$, median difference of only $\$3.60$) | ADR is statistically significant ($p < 10^{-60}$) due to large $N$, but has **negligible practical effect size**; pricing is not a primary churn driver. |
-| **Feature Selection ($k=50$)** | Top 50 features retain **$99.91\%$ of LightGBM ROC-AUC** ($0.9612$ vs. $0.9621$) | Slashes memory footprint by **$80.5\%$** and reduces query latency by $45\%$; regularizes Random Forest against noise (+0.46% AUC). |
-| **PCA Failure Mode in Trees** | PCA systematically degrades tree ensembles ($0.9621 \to 0.9478$ at PCA-50) | **"Diagonal Boundary Destruction"**: orthogonal axis-aligned tree splits cannot efficiently cut dense eigenvector rotations. Conversely, PCA delivers a **$41.5\times$ inference speedup for KNN**. |
+### The Dataset
+- **Source**: Kaggle Hotel Booking Demand Dataset (Jessemostipak)
+- **Size**: 119,390 bookings (from City and Resort hotels in Portugal)
+- **Target Variable**: `is_canceled` (0 = Did not cancel, 1 = Canceled)
 
 ---
 
-## 📊 Visual Gallery
+## 2. Project Folder Structure
 
-<div align="center">
-
-| Model Leaderboard (All Paradigms) | Operational Cost vs. Decision Threshold |
-|:---:|:---:|
-| ![Leaderboard](results/figures/final_model_leaderboard.png) | ![Cost Threshold](results/figures/cost_threshold_optimization.png) |
-| **Precision-Recall Curves** | **Probability Calibration & Reliability** |
-| ![PR Curves](results/figures/final_precision_recall_curves.png) | ![Calibration](results/figures/final_calibration_curves.png) |
-| **Feature Selection Trade-off** | **PCA Scree Plot & Cumulative Variance** |
-| ![Feature Selection](results/figures/feature_selection_tradeoff.png) | ![PCA Scree](results/figures/pca_scree_plot.png) |
-
-</div>
-
----
-
-## 📂 Repository Directory Layout
+The project is organized simply:
 
 ```text
 hotel-booking-cancellation-prediction/
 ├── data/
-│   ├── raw/
-│   │   └── hotel_bookings.csv             # Kaggle raw dataset (119,390 rows, 32 columns)
-│   └── processed/                         # Standardized & leakage-free split partitions
-│       ├── X_train.parquet                # Encoded train features (95,366 x 257)
-│       ├── X_test.parquet                 # Encoded test features (23,842 x 257)
-│       ├── y_train.csv / y_test.csv       # Target vectors (37.08% cancellation rate)
-│       ├── preprocessor.joblib            # Serialized fitted ColumnTransformer
-│       └── feature_names.json             # 257 ordered output column names
-├── notebooks/                             # 12 Dedicated, Student-Friendly Notebooks
-│   ├── 01_data_understanding.ipynb       # Data ingestion, schema audit, missingness
-│   ├── 02_exploratory_data_analysis.ipynb # Distributions, seasonality, deposit paradox
-│   ├── 03_statistical_analysis.ipynb     # Chi-square, t-tests, Mann-Whitney U, correlations
-│   ├── 04_data_preprocessing.ipynb        # Leakage elimination, anomaly filter, pipeline
-│   ├── 05_knn.ipynb                      # K-Nearest Neighbors (Default vs. Tuned)
-│   ├── 06_decision_tree.ipynb            # Decision Tree Classifier (Default vs. Tuned)
-│   ├── 07_random_forest.ipynb            # Random Forest Classifier (Default vs. Tuned)
-│   ├── 08_xgboost.ipynb                  # XGBoost Classifier (Default vs. Tuned)
-│   ├── 09_lightgbm.ipynb                 # LightGBM Classifier (Default vs. Tuned)
-│   ├── 10_mlp.ipynb                      # Multilayer Perceptron (Default vs. Tuned)
-│   ├── 11_feature_selection_and_pca.ipynb # Feature Selection vs. PCA experiments
-│   └── 12_final_model_comparison.ipynb   # Master Leaderboard & revenue loss analysis
-├── src/                                   # Reusable, Clean Python Production Modules
-│   ├── __init__.py
-│   ├── data_loader.py                     # Raw ingestion & domain anomaly cleaning
-│   ├── preprocessing.py                  # Scikit-learn Pipeline & ColumnTransformer
-│   ├── evaluation.py                      # Comprehensive multi-metric evaluation
-│   ├── plotting.py                        # Publication figure generation utilities
-│   └── run_baseline_pipeline.py          # Standalone reproducible execution script
-├── results/                               # Empirical Artifacts (Zero Fabrication)
-│   ├── metrics/                           # CSV metrics across all phases
-│   │   ├── baseline_results.csv           # 6 baseline models test & CV metrics
-│   │   ├── tuned_results.csv              # 6 tuned models test & CV metrics
-│   │   ├── feature_selection_results.csv  # Performance across k in [10, 257]
-│   │   ├── pca_results.csv                # Performance across PCA components
-│   │   └── model_calibration_metrics.csv  # Brier scores & PR-AUC scores
-│   ├── tables/                            # Formal summary tables
-│   │   ├── statistical_tests.csv          # Inferential statistics & effect sizes
-│   │   ├── baseline_vs_tuned.csv          # Direct head-to-head comparison & deltas
-│   │   ├── feature_importance_ranking.csv # Composite consensus ranking (257 features)
-│   │   ├── pca_variance_summary.csv       # Explained variance milestones
-│   │   ├── threshold_optimization_results.csv # Dollar savings across thresholds
-│   │   ├── final_model_leaderboard.csv    # Master ranking across all paradigms
-│   │   └── final_research_questions_answers.csv # Rigorous answers to RQ1-RQ6
-│   └── figures/                           # 28 High-Resolution Publication Figures (300 DPI)
-├── report/
-│   ├── research_paper.md                  # Complete 23-Section Academic Research Paper
-│   └── hotel_cancellation_progress_presentation.pptx # Project presentation slide deck
-├── tests/                                 # Automated Regression & Validation Suite
-│   ├── __init__.py
-│   └── test_pipeline.py                  # 9 unit & integration tests (100% pass)
-├── requirements.txt                       # Pinned dependencies
-└── README.md                              # Repository documentation
+│   ├── raw/                 # Original hotel_bookings.csv dataset
+│   └── processed/           # Cleaned 80/20 train and test parquet/csv files
+├── models/                  # All saved .joblib models (default + tuned + preprocessor)
+├── notebooks/               # 10 step-by-step Jupyter notebooks
+├── report/                  # Full academic research paper and presentation slides
+├── results/                 # Dedicated folders for every notebook's plots and tables
+│   ├── 01_data_exploration/
+│   ├── 02_data_preprocessing/
+│   ├── 03_knn/
+│   ├── 04_decision_tree/
+│   ├── 05_random_forest/
+│   ├── 06_xgboost/
+│   ├── 07_lightgbm/
+│   ├── 08_mlp/
+│   ├── 09_feature_selection_and_pca/
+│   └── 10_model_comparison/
+├── src/                     # Helper functions for data loading, preprocessing, evaluation, and plotting
+├── README.md                # Project guide with all results, metrics, and visual plots
+└── requirements.txt         # Required Python packages
 ```
 
 ---
 
-## 🔬 The 12-Notebook Research Workflow
+## 3. Step-by-Step Workflow & Results
 
-Every single notebook is fully executed end-to-end with rendered outputs and strictly adheres to the university's **3-part pedagogical framework**:
-1. `### What we are doing`: Technical methodology and implementation procedure.
-2. `### Why we are doing it`: Mathematical formulation, statistical assumptions, and curricular rationale.
-3. `### What the output means`: Domain interpretation, operational risk implications, and next steps.
+### Step 1: Data Exploration (`01_data_exploration.ipynb`)
+We first inspected the raw dataset, checked for missing values, and visualized cancellation rates across different booking features.
 
-| Notebook | Focus & Curriculum Concepts | Key Empirical Output |
-|:---|:---|:---|
-| **[01_data_understanding.ipynb](notebooks/01_data_understanding.ipynb)** | Data ingestion, data types, missing value audit, dimensional validation. | 119,390 rows, 32 attributes; verified 4 missing value columns (`children`, `country`, `agent`, `company`). |
-| **[02_exploratory_data_analysis.ipynb](notebooks/02_exploratory_data_analysis.ipynb)** | Univariate/bivariate distributions, right-skew in lead time, seasonality, market segments. | Discovered Non-Refundable deposit paradox (99.4% cancel rate) and parking commitment protection (0% cancel rate). |
-| **[03_statistical_analysis.ipynb](notebooks/03_statistical_analysis.ipynb)** | Pearson $\chi^2$, Cramér's $V$, Welch's $t$, Mann-Whitney $U$, Pearson vs. Spearman correlations. | Confirmed large effect sizes for `deposit_type` ($V=0.4815$) and `lead_time` ($d=0.6342$); demonstrated room rate fallacy ($d=0.0986$). |
-| **[04_data_preprocessing.ipynb](notebooks/04_data_preprocessing.ipynb)** | Zero data leakage enforcement, ghost booking filter, Scikit-learn `ColumnTransformer`. | Filtered 180 ghost bookings and 2 ADR typos; permanently excised post-outcome fields; 95,366 train vs. 23,842 test. |
-| **[05_knn.ipynb](notebooks/05_knn.ipynb)** | K-Nearest Neighbors Classifier (Part 1: Default, Part 2: Tuned, Part 3: Comparison). | Baseline accuracy 83.9% $\to$ Tuned 86.5% via $k=15$ and distance weighting; ROC-AUC 0.934. |
-| **[06_decision_tree.ipynb](notebooks/06_decision_tree.ipynb)** | Decision Tree Classifier (Part 1: Default, Part 2: Tuned, Part 3: Comparison). | Unpruned tree overfitted $\to$ Depth constraint (16) surged ROC-AUC from 0.841 to 0.932 (+0.091 gain). |
-| **[07_random_forest.ipynb](notebooks/07_random_forest.ipynb)** | Random Forest Classifier (Part 1: Default, Part 2: Tuned, Part 3: Comparison). | Near-optimal baseline (89.3% accuracy, 0.957 ROC-AUC); leaf regularization pushed precision to 89.8%. |
-| **[08_xgboost.ipynb](notebooks/08_xgboost.ipynb)** | XGBoost Classifier (Part 1: Default, Part 2: Tuned, Part 3: Comparison). | Subsampling (0.8) and learning rate shrinkage (0.2) boosted recall, achieving 0.956 ROC-AUC. |
-| **[09_lightgbm.ipynb](notebooks/09_lightgbm.ipynb)** | LightGBM Classifier (Part 1: Default, Part 2: Tuned, Part 3: Comparison). | Study champion! 89.2% accuracy, 0.958 ROC-AUC, fast training (~3s), lowest calibration error. |
-| **[10_mlp.ipynb](notebooks/10_mlp.ipynb)** | Multilayer Perceptron Neural Network (Part 1: Default, Part 2: Tuned, Part 3: Comparison). | Wider layers `(128, 64)` increased recall by +3.22% (80.7%), achieving 0.936 ROC-AUC. |
-| **[11_feature_selection_and_pca.ipynb](notebooks/11_feature_selection_and_pca.ipynb)** | Feature Selection (Top 50 features) vs. PCA Dimensionality Reduction. | Top 50 features retain 99.4% of full accuracy with 3x speedup; PCA degrades tree splits. |
-| **[12_final_model_comparison.ipynb](notebooks/12_final_model_comparison.ipynb)** | Master Leaderboard, confusion matrices, and hotel revenue optimization ($3.1M revenue impact). | Comprehensive comparison proving LightGBM is the superior operational choice for hotel revenue managers. |
+- **Class Balance**: 37.0% of bookings were canceled and 63.0% were not canceled.
+- **Key Pattern**: Bookings made far in advance (`lead_time`) and bookings with a `Non Refund` deposit had much higher cancellation rates.
+
+![Target Distribution](results/01_data_exploration/target_distribution.png)
+![Cancellations by Category](results/01_data_exploration/cancellation_by_categories.png)
 
 ---
 
-## 📈 Master Empirical Model Leaderboard
-
-Evaluated strictly on the held-out test partition ($N_{\text{test}} = 23,842$, $37.08\%$ cancellation rate):
-
-| Rank | Model Architecture | Paradigm | Features ($d$) | Test ROC-AUC | Test PR-AUC | Test Accuracy | Test Pos F1 | Brier Score | Fit Time | Query Latency |
-|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 🥇 **1** | **LightGBM** | **Tuned** | **257** | **0.9621** | **0.9433** | **0.8919** | **0.8519** | **0.0750** | **2.73s** | **8.29 µs** |
-| 🥈 **2** | **LightGBM ($k=50$)** | Feature Selection | 50 | 0.9612 | — | 0.8917 | 0.8509 | — | 3.09s | 7.62 µs |
-| 🥉 **3** | **Random Forest ($k=50$)** | Feature Selection | 50 | 0.9609 | — | 0.8922 | 0.8482 | — | 12.83s | 22.72 µs |
-| 4 | **Random Forest** | Baseline | 257 | 0.9589 | — | 0.8930 | 0.8480 | — | 20.47s | 20.72 µs |
-| 5 | **XGBoost** | Tuned | 257 | 0.9588 | 0.9381 | 0.8872 | 0.8448 | 0.0785 | 7.68s | 3.81 µs |
-| 6 | **Random Forest** | Tuned | 257 | 0.9560 | 0.9365 | 0.8838 | 0.8316 | 0.0845 | 17.70s | 19.21 µs |
-| 7 | **XGBoost** | Baseline | 257 | 0.9543 | — | 0.8809 | 0.8347 | — | 7.07s | 3.81 µs |
-| 8 | **LightGBM** | Baseline | 257 | 0.9517 | — | 0.8783 | 0.8306 | — | 2.71s | 10.27 µs |
-| 9 | **LightGBM (PCA-50)** | PCA Extraction | 50 | 0.9478 | — | 0.8789 | 0.8296 | — | 5.76s | 7.82 µs |
-| 10 | **MLP** | Tuned | 257 | 0.9466 | 0.9232 | 0.8709 | 0.8225 | 0.0895 | 56.25s | 5.19 µs |
-| 11 | **MLP (PCA-50)** | PCA Extraction | 50 | 0.9443 | — | 0.8697 | 0.8219 | — | 52.47s | 4.87 µs |
-| 12 | **MLP** | Baseline | 257 | 0.9439 | — | 0.8711 | 0.8167 | — | 57.93s | 5.19 µs |
-| 13 | **Random Forest (PCA-50)** | PCA Extraction | 50 | 0.9436 | — | 0.8662 | 0.8034 | — | 29.65s | 7.74 µs |
-| 14 | **Decision Tree** | Tuned | 257 | 0.9373 | 0.9005 | 0.8674 | 0.8172 | 0.0934 | 2.36s | 1.57 µs |
-| 15 | **KNN** | Tuned | 257 | 0.9363 | 0.9138 | 0.8687 | 0.8167 | 0.0937 | 0.16s | 18.65 ms |
-| 16 | **KNN (PCA-50)** | PCA Extraction | 50 | 0.9342 | — | 0.8608 | 0.8109 | — | 0.03s | 7.49 ms |
-| 17 | **KNN** | Baseline | 257 | 0.9025 | — | 0.8387 | 0.7781 | — | 0.26s | 2.20 ms |
-| 18 | **Decision Tree** | Baseline | 257 | 0.8610 | — | 0.8671 | 0.8217 | — | 4.42s | 1.57 µs |
+### Step 2: Data Preprocessing & Cleaning (`02_data_preprocessing.ipynb`)
+Real data contains noise and potential data leaks. We cleaned the data using standard steps:
+1. **Removed Ghost Bookings**: Dropped 180 rows where adults, children, and babies were all 0.
+2. **Fixed Price Outliers**: Removed 2 invalid rows (one negative room rate and one typo of 5,400 EUR).
+3. **Prevented Data Leakage**: Dropped `reservation_status` and `reservation_status_date` because knowing a guest "checked out" directly reveals they did not cancel.
+4. **Engineered 5 Useful Features**: Total stay nights, total guests, booking changes made, kids present indicator, and parking requested indicator.
+5. **Stratified Split**: 80% for training ($N = 95,366$) and 20% for testing ($N = 23,842$).
+6. **Encoding & Scaling**: Scaled numerical features with `StandardScaler` and one-hot encoded categories, giving 255 predictor columns.
 
 ---
 
-## 💡 Resolution of the Six Core Research Questions
+### Step 3: Model Evaluation & Metric Analysis (Notebooks 03 to 08)
 
-### RQ1: Which attributes are associated with hotel booking cancellations?
-* **Deposit Type**: Strongest categorical association ($\chi^2 = 27,639.52$, Cramér's $V = 0.4815$). Non-refundable deposits have a $99.36\%$ cancellation rate due to wholesale group block allocations.
-* **Lead Time**: Strongest continuous association (Welch's $t = 98.94$, Cohen's $d = 0.6342$, canceled average $144.9$ vs. $80.1$ days).
-* **Commitment Signals**: Requesting special requests ($-26.0\%$ cancellation rate) and parking spaces ($0\%$ cancellation rate) indicate high personal travel commitment.
-
-### RQ2: Which machine learning algorithm performs best?
-* **LightGBM** is the decisive global champion across all seven evaluation axes: ROC-AUC ($0.9621$), PR-AUC ($0.9433$), Accuracy ($89.19\%$), Positive F1 ($0.8519$), Brier Score ($0.0750$), Training Wall-Clock Time ($2.73$s), and Operational Loss ($\$381,516$).
-
-### RQ3: How much do hyperparameter adjustments improve model performance?
-* **High-variance/weak learners** gain massively: Decision Tree gained **$+7.63\%$ in ROC-AUC** ($0.8610 \to 0.9373$) through depth and leaf sample regularization; KNN gained **$+3.38\%$ in ROC-AUC** ($0.9025 \to 0.9363$) via Manhattan distance and distance weighting.
-* **Ensembles** gain moderately: LightGBM gained **$+1.04\%$**, XGBoost gained **$+0.45\%$**.
-* **Breiman's Random Forest defaults** are near-optimal ($0.9589 \to 0.9560$, $\Delta = -0.0029$), demonstrating empirical honesty regarding baseline strength.
-
-### RQ4: Does feature selection improve model performance?
-* **Yes, decisively**. Selecting the top **$50$ features** ($19.5\%$ of dimensions) captures **$99.91\%$ of LightGBM's discriminative power** ($0.9612$ vs. $0.9621$), cuts memory by $80.5\%$, and reduces query latency by $45\%$.
-* For Random Forest, feature selection **actively improves accuracy and ROC-AUC** (+0.46%) by eliminating noise from sparse one-hot dummy variables.
-
-### RQ5: Does dimensionality reduction using PCA improve or reduce performance?
-* **PCA systematically degrades tree ensemble performance** ($0.9621 \to 0.9478$ at PCA-50). Decision trees construct orthogonal axis-aligned cuts ($x_j \le \theta$); dense linear combinations rotate decision boundaries into diagonals, forcing trees into inefficient, sample-starved staircase approximations (**"Diagonal Boundary Destruction"**).
-* For distance-based instance learners (KNN), PCA provides a **$41.5\times$ query speedup** while preserving metric geometry.
-
-### RQ6: How well do the models generalize to unseen data?
-* **Exceptional external generalization with zero data leakage**. LightGBM 5-fold cross-validation ROC-AUC on training data is $0.9580 \pm 0.0010$ vs. held-out test ROC-AUC of $0.9621$ ($\Delta = +0.0041$). The complete absence of generalization degradation confirms strict separation of preprocessing and testing sets.
+For each model, we evaluated all key classification metrics:
+- **Accuracy**: Overall fraction of correct predictions.
+- **ROC-AUC**: Ability to rank cancellations above non-cancellations regardless of threshold.
+- **F1-Score**: Harmonic mean of Precision and Recall.
+- **Precision**: When predicting a cancellation, how often the model is correct (minimizes false alarms).
+- **Recall**: Percentage of actual cancellations detected (minimizes missed cancellations).
+- **Specificity**: Percentage of non-cancellations correctly identified.
 
 ---
 
-## 🛠️ Installation & Reproducibility Guide
+#### 1. K-Nearest Neighbors (KNN) (`03_knn.ipynb`)
+- **Default**: $k = 5$, uniform weights.
+- **Tuned**: $k = 15$, distance-based weights (closer neighbors have more say).
+- **Takeaway**: Distance weighting improved F1-score (+3.1%) and Accuracy (+2.4%) because it prevents distant noisy neighbors in high dimensions from diluting the vote.
 
-### 1. Prerequisites & Environment Setup
-The project requires **Python 3.12+** on Windows, macOS, or Linux. The recommended virtual environment is `.venv`:
+| Metric | Default (No Tuning) | Tuned | Improvement |
+| :--- | :---: | :---: | :---: |
+| **Accuracy** | 83.61% | **86.05%** | +2.44% |
+| **ROC-AUC** | 0.8998 | **0.9309** | +0.0311 |
+| **F1-Score** | 0.7738 | **0.8047** | +0.0310 |
+| **Precision** | 79.23% | **83.65%** | +4.41% |
+| **Recall** | 75.61% | **77.53%** | +1.92% |
+| **Specificity** | 88.32% | **91.07%** | +2.75% |
 
-```bash
-# Clone the repository
-git clone https://github.com/your-username/hotel-booking-cancellation-prediction.git
-cd hotel-booking-cancellation-prediction
-
-# Create and activate Python virtual environment
-python -m venv .venv
-
-# Windows PowerShell:
-.\.venv\Scripts\Activate.ps1
-
-# Linux / macOS:
-source .venv/bin/activate
-
-# Upgrade pip and install pinned dependencies
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-### 2. Register Jupyter Kernel
-To execute or interact with the notebooks using the `.venv` environment:
-```bash
-python -m ipykernel install --user --name venv --display-name "Python (.venv)"
-```
-
-### 3. Run the Automated Test Suite (100% Pass)
-Verify data pipeline integrity, zero leakage, domain feature mathematics, and artifact presence:
-```bash
-python -m pytest tests/test_pipeline.py -v
-```
-*Expected Output:*
-```text
-tests/test_pipeline.py::test_raw_data_loading PASSED                     [ 11%]
-tests/test_pipeline.py::test_anomaly_cleaning PASSED                     [ 22%]
-tests/test_pipeline.py::test_clean_dataset PASSED                        [ 33%]
-tests/test_pipeline.py::test_feature_engineering PASSED                  [ 44%]
-tests/test_pipeline.py::test_target_leakage_prevention PASSED            [ 55%]
-tests/test_pipeline.py::test_stratified_split PASSED                     [ 66%]
-tests/test_pipeline.py::test_preprocessor_fit_transform PASSED           [ 77%]
-tests/test_pipeline.py::test_evaluate_model PASSED                       [ 88%]
-tests/test_pipeline.py::test_saved_artifacts_exist PASSED                [100%]
-============================== 9 passed in 6.76s ==============================
-```
-
-### 4. Reproduce the Data Preprocessing & Modeling Pipeline
-You can run the end-to-end data pipeline directly via Python:
-```bash
-# Run data preprocessing and serialization:
-python -c "from src.preprocessing import prepare_data; prepare_data()"
-
-# Run baseline model evaluation pipeline:
-python src/run_baseline_pipeline.py
-```
+![KNN Metrics Comparison](results/03_knn/metrics_comparison.png)
+![KNN Confusion Matrices](results/03_knn/confusion_matrices.png)
+![KNN ROC Curve](results/03_knn/roc_curve.png)
+![KNN Precision-Recall Curve](results/03_knn/precision_recall_curve.png)
 
 ---
 
-## 📖 Academic Research Paper
+#### 2. Decision Tree (`04_decision_tree.ipynb`)
+- **Default**: Unconstrained tree (`max_depth = None`).
+- **Tuned**: Regularized tree (`max_depth = 15`, `min_samples_leaf = 10`, `criterion = entropy`).
+- **Takeaway**: An unpruned tree severely overfits training noise. Regularizing depth boosted ROC-AUC from 0.8597 to **0.9387** (+7.9%) and raised Precision from 81.49% to **84.55%**.
 
-The complete, university-submitted monograph is located at:  
-👉 **[`report/research_paper.md`](report/research_paper.md)**
+| Metric | Default (No Tuning) | Tuned | Improvement |
+| :--- | :---: | :---: | :---: |
+| **Accuracy** | 86.59% | **86.80%** | +0.21% |
+| **ROC-AUC** | 0.8597 | **0.9387** | +0.0790 |
+| **F1-Score** | 0.8204 | **0.8157** | -0.46% |
+| **Precision** | 81.49% | **84.55%** | +3.06% |
+| **Recall** | 82.59% | **78.80%** | -3.79% |
+| **Specificity** | 88.95% | **91.51%** | +2.57% |
 
-* **Title**: *Empirical Evaluation of Machine Learning Classifiers, Probability Calibration, and Asymmetric Operational Loss Optimization for Hotel Booking Cancellation Prediction*
-* **Length**: 23 formal academic sections, 19,833 words, 19 empirical markdown tables, 28 high-resolution figure citations, 38 APA references.
-* **Curriculum Alignment**: Dr. Abdulkerim Mohammed Yibre (FSMVU Data Science).
+![Decision Tree Metrics Comparison](results/04_decision_tree/metrics_comparison.png)
+![Decision Tree Confusion Matrices](results/04_decision_tree/confusion_matrices.png)
+![Decision Tree ROC Curve](results/04_decision_tree/roc_curve.png)
+![Decision Tree Precision-Recall Curve](results/04_decision_tree/precision_recall_curve.png)
 
 ---
 
-## 👥 Authors & Academic Acknowledgments
+#### 3. Random Forest (`05_random_forest.ipynb`)
+- **Default**: 100 trees, default split criteria.
+- **Tuned**: 200 trees, `max_depth = 25`, `min_samples_split = 5`.
+- **Takeaway**: Top-tier performance across the board. Random Forest delivers the **highest Precision (89.52%)** and **highest Specificity (94.43%)** of all models, meaning when it flags a cancellation, hotel staff can be 90% sure it is accurate.
 
-* **Lead Researcher**: Computer Engineering / Data Science Student
-* **Academic Supervisor**: Dr. Abdulkerim Mohammed Yibre
-* **Institution**: Faculty of Engineering, Department of Computer Engineering, Fatih Sultan Mehmet Vakıf University (FSMVU)
-* **Dataset Credit**: Nuno Antonio, Ana de Almeida, and Luis Nunes (2019). *Hotel Booking Demand Datasets*. Data in Brief, 22, 41–49.
+| Metric | Default (No Tuning) | Tuned | Improvement |
+| :--- | :---: | :---: | :---: |
+| **Accuracy** | 89.16% | **89.33%** | +0.17% |
+| **ROC-AUC** | 0.9590 | **0.9594** | +0.0005 |
+| **F1-Score** | 0.8459 | **0.8486** | +0.26% |
+| **Precision** | 89.40% | **89.52%** | +0.11% |
+| **Recall** | 80.27% | **80.66%** | +0.38% |
+| **Specificity** | 94.39% | **94.43%** | +0.04% |
+
+![Random Forest Metrics Comparison](results/05_random_forest/metrics_comparison.png)
+![Random Forest Confusion Matrices](results/05_random_forest/confusion_matrices.png)
+![Random Forest ROC Curve](results/05_random_forest/roc_curve.png)
+![Random Forest Precision-Recall Curve](results/05_random_forest/precision_recall_curve.png)
 
 ---
 
-## 📄 License
-This project is licensed under the [MIT License](LICENSE) — free to use for academic, research, and educational purposes.
+#### 4. XGBoost (`06_xgboost.ipynb`)
+- **Default**: 100 boosting rounds, `learning_rate = 0.3`, `max_depth = 6`.
+- **Tuned**: 200 boosting rounds, `learning_rate = 0.1`, `max_depth = 8`, `subsample = 0.8`.
+- **Takeaway**: Very strong gradient-boosted ensemble reaching **88.11% Accuracy** and **0.9542 ROC-AUC**. Balanced precision (85.85%) and recall (81.33%).
+
+| Metric | Default (No Tuning) | Tuned | Improvement |
+| :--- | :---: | :---: | :---: |
+| **Accuracy** | 88.12% | **88.11%** | -0.01% |
+| **ROC-AUC** | 0.9539 | **0.9542** | +0.0003 |
+| **F1-Score** | 0.8352 | **0.8353** | +0.02% |
+| **Precision** | 85.98% | **85.85%** | -0.13% |
+| **Recall** | 81.19% | **81.33%** | +0.15% |
+| **Specificity** | 92.20% | **92.10%** | -0.10% |
+
+![XGBoost Metrics Comparison](results/06_xgboost/metrics_comparison.png)
+![XGBoost Confusion Matrices](results/06_xgboost/confusion_matrices.png)
+![XGBoost ROC Curve](results/06_xgboost/roc_curve.png)
+![XGBoost Precision-Recall Curve](results/06_xgboost/precision_recall_curve.png)
+
+---
+
+#### 5. LightGBM (`07_lightgbm.ipynb`)
+- **Default**: 100 trees, `num_leaves = 31`, `learning_rate = 0.1`.
+- **Tuned**: 200 trees, `num_leaves = 63`, `learning_rate = 0.05`.
+- **Takeaway**: **Best overall model of the entire project!** Achieves the highest Accuracy (**89.37%**), highest ROC-AUC (**0.9623**), highest F1-Score (**0.8539**), and highest Recall (**83.83%**), while training in under 4 seconds.
+
+| Metric | Default (No Tuning) | Tuned | Improvement |
+| :--- | :---: | :---: | :---: |
+| **Accuracy** | 87.81% | **89.37%** | +1.56% |
+| **ROC-AUC** | 0.9516 | **0.9623** | +0.0107 |
+| **F1-Score** | 0.8306 | **0.8539** | +2.34% |
+| **Precision** | 85.67% | **87.01%** | +1.35% |
+| **Recall** | 80.60% | **83.83%** | +3.24% |
+| **Specificity** | 92.05% | **92.63%** | +0.57% |
+
+![LightGBM Metrics Comparison](results/07_lightgbm/metrics_comparison.png)
+![LightGBM Confusion Matrices](results/07_lightgbm/confusion_matrices.png)
+![LightGBM ROC Curve](results/07_lightgbm/roc_curve.png)
+![LightGBM Precision-Recall Curve](results/07_lightgbm/precision_recall_curve.png)
+
+---
+
+#### 6. Multilayer Perceptron (MLP) Neural Network (`08_mlp.ipynb`)
+- **Default**: Single hidden layer `(100,)`, ReLU activation, Adam optimizer.
+- **Tuned**: Two hidden layers `(128, 64)`, L2 regularization `alpha = 0.001`, early stopping.
+- **Takeaway**: Solid neural network performance reaching **87.01% Accuracy** and **0.9447 ROC-AUC**. Tuning improved recall from 77.96% to **80.15%**.
+
+| Metric | Default (No Tuning) | Tuned | Improvement |
+| :--- | :---: | :---: | :---: |
+| **Accuracy** | 87.12% | **87.01%** | -0.12% |
+| **ROC-AUC** | 0.9443 | **0.9447** | +0.0004 |
+| **F1-Score** | 0.8178 | **0.8206** | +0.27% |
+| **Precision** | 86.00% | **84.07%** | -1.93% |
+| **Recall** | 77.96% | **80.15%** | +2.18% |
+| **Specificity** | 92.52% | **91.05%** | -1.47% |
+
+![MLP Metrics Comparison](results/08_mlp/metrics_comparison.png)
+![MLP Confusion Matrices](results/08_mlp/confusion_matrices.png)
+![MLP ROC Curve](results/08_mlp/roc_curve.png)
+![MLP Precision-Recall Curve](results/08_mlp/precision_recall_curve.png)
+
+---
+
+### Step 4: Feature Selection & PCA (`09_feature_selection_and_pca.ipynb`)
+We analyzed what happens when we reduce the number of features:
+- **Top Features**: Lead time, country of origin (Portugal `PRT`), deposit type (Non-Refundable), and customer type are the biggest drivers of cancellation.
+- **Feature Selection vs. PCA**:
+  - Selecting the top 50 features kept **99.4%** of model accuracy while using only 20% of the columns.
+  - Applying PCA (dimensionality reduction) actually **reduced** tree model accuracy from 89.3% down to 84.1%. This is because PCA rotates one-hot encoded categories into continuous mixtures, which makes tree splitting much harder.
+
+![Top 15 Features](results/09_feature_selection_and_pca/top_15_features.png)
+![PCA Scree Plot](results/09_feature_selection_and_pca/pca_scree_plot.png)
+
+---
+
+### Step 5: Final Model Comparison (`10_model_comparison.ipynb`)
+All 6 models were evaluated on the exact same 20% unseen test set ($23,842$ bookings):
+
+| Model | Variant | Test Accuracy | ROC-AUC | F1-Score | Precision | Recall | Specificity |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **LightGBM** | Tuned | **89.37%** | **0.9623** | **0.8539** | 87.01% | **83.83%** | 92.63% |
+| **Random Forest** | Tuned | **89.33%** | 0.9594 | 0.8486 | **89.52%** | 80.66% | **94.43%** |
+| **XGBoost** | Tuned | 88.11% | 0.9542 | 0.8353 | 85.85% | 81.33% | 92.10% |
+| **MLP (Neural Net)**| Tuned | 87.01% | 0.9447 | 0.8206 | 84.07% | 80.15% | 91.05% |
+| **Decision Tree** | Tuned | 86.80% | 0.9387 | 0.8157 | 84.55% | 78.80% | 91.51% |
+| **KNN** | Tuned | 86.05% | 0.9309 | 0.8047 | 83.65% | 77.53% | 91.07% |
+
+![Model Leaderboard](results/10_model_comparison/model_leaderboard_barchart.png)
+![Combined ROC Curves](results/10_model_comparison/combined_roc_curves.png)
+![Combined Precision-Recall Curves](results/10_model_comparison/combined_pr_curves.png)
+
+---
+
+## 4. Main Research Conclusions
+
+1. **Which algorithm won?**
+   - **LightGBM** is the champion model with **89.37% Accuracy**, **0.9623 ROC-AUC**, and **0.8539 F1-Score**. It also had the highest recall (detecting 83.8% of all cancellations) and trained in just 3.5 seconds.
+   - **Random Forest** finished a close second (**89.33% Accuracy**) and achieved the highest precision (**89.52%**).
+2. **Did hyperparameter tuning help?**
+   - Yes. It gave Decision Trees (+7.9% ROC-AUC) and KNN (+3.1% F1) massive boosts by stopping overfitting. Ensemble models (LightGBM and Random Forest) gained consistency, higher recall, and sharper decision boundaries.
+3. **Does PCA help?**
+   - No. For this tabular dataset with many one-hot encoded categories, PCA reduced accuracy by about 5 percentage points. Feature selection (keeping the top 50 features) worked much better.
+
+---
+
+## 5. How to Run the Project
+
+1. **Activate the Python virtual environment**:
+   ```bash
+   .\.venv\Scripts\Activate.ps1
+   ```
+2. **Open Jupyter Notebook or VS Code**:
+   ```bash
+   jupyter notebook
+   ```
+3. **Run the notebooks in order** from `notebooks/01_data_exploration.ipynb` to `notebooks/10_model_comparison.ipynb`. Each notebook runs independently and saves its own charts to its matching folder in `results/`.

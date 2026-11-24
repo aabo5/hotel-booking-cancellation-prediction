@@ -1,8 +1,0 @@
-Pipeline Stage,Input Dimensions,Output Dimensions,Operations Applied,Leakage Prevention Rule
-1. Raw Ingestion,"(119,390, 32)","(119,390, 32)",Ingestion and baseline missing value audit,N/A (Raw state)
-2. Data Cleaning,"(119,390, 32)","(119,208, 32)",Filtered 180 ghost bookings + 2 ADR outliers; Imputed missing values,Unsupervised record filtering
-3. Feature Engineering,"(119,208, 32)","(119,208, 39)","Created 7 domain features (stay nights, guests, family, special requests, etc.)",Calculated strictly within row observations
-4. Target Leakage Removal,"(119,208, 39)","(119,208, 37)",Dropped reservation_status and reservation_status_date,Strictly eliminated 100% deterministic post-outcome fields
-5. Stratified Partitioning,"(119,208, 37)","Train: (95,366, 36), Test: (23,842, 36)",80/20 Stratified train/test split (random_state=42),Preserved exact 37.08% target ratio across folds
-6. Transformation Pipeline,"Train: (95,366, 36), Test: (23,842, 36)","Train: (95366, 257), Test: (23842, 257)",StandardScaler (26 num) + OneHotEncoder (10 cat -> 231 dummies),ColumnTransformer fitted strictly on X_train only
-7. Serialization & Export,"Train: (95366, 257), Test: (23842, 257)",Saved to data/processed/,"Exported .npz, .parquet, .csv, .joblib, and .json artifacts",Decoupled persistent artifacts ready for Phase 6
