@@ -104,8 +104,9 @@ FS_COMMON = (
     "rare countries) and keeps 115; the L1 logistic regression keeps 44 features with non-zero weights."
 )
 FS = (
-    f"The two tables and the figure above show that feature selection kept or improved the performance in most cases while using only "
-    f"50 of the 255 columns, i.e. **80% fewer features** and shorter training times (e.g. Random Forest "
+    f"The two tables and the figure above show that with only 50 of the 255 columns (**80% fewer features**) the F1-score improved in "
+    f"{int((delta.stack() > 0).sum())} of the {delta.size} model/technique combinations and stayed within the noise level (-0.003) or better in "
+    f"{int((delta.stack() >= -0.003).sum())} of them, with shorter training times (e.g. Random Forest "
     f"{TT.loc['All features', 'Random Forest']:.1f} s -> {TT.loc[rf_best_set, 'Random Forest']:.1f} s). The selections that **boosted** performance are:"
 )
 FS_ITEMS = [

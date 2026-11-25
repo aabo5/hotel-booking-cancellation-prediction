@@ -290,7 +290,7 @@ J(f"Cancellations are one of the biggest sources of lost revenue for hotels. In 
   f"with default settings and again after hyper-parameter optimisation with grid search and 3-fold cross-validation. "
   f"On the held-out test set ({prep['Testing Rows (20%)']:,} bookings) the tuned **{BEST}** is the best model "
   f"(accuracy {p(lbi.loc[BEST, 'Accuracy'], 2)}, F1 {f4(lbi.loc[BEST, 'F1-Score'])}, ROC-AUC {f4(lbi.loc[BEST, 'ROC-AUC'])}), "
-  f"closely followed by {SECOND}. Finally, five feature selection techniques (filter, wrapper and embedded) and PCA were "
+  f"closely followed by {SECOND}. Finally, six feature selection techniques (filter, wrapper and embedded) and PCA were "
   f"compared before and after reduction. FS_ABSTRACT")
 P("**Keywords:** hotel booking cancellation, classification, LightGBM, Random Forest, hyper-parameter optimisation, "
   "feature selection, PCA")
@@ -413,13 +413,13 @@ J("The histograms confirm the right skew of the count-type attributes: most book
   "IQR rule marks many values of these features as outliers (Section 4.3).")
 F("01_data_exploration/monthly_seasonality.png", "Chart 5 - bookings and cancellation rate per arrival month and hotel.")
 J("Demand is seasonal: both hotels receive most bookings in summer (peak in August) and fewest in winter. The City Hotel's "
-  "cancellation rate is above 37% in every month and peaks in April-June; the Resort Hotel's rate is highest in the summer "
+  "cancellation rate stays at about 37% or higher in every month (lowest: March, 36.9%) and peaks in April-June; the Resort Hotel's rate is highest in the summer "
   "months and lowest in January. Arrival month is therefore a useful predictor.")
 F("01_data_exploration/correlation_heatmap.png", "Chart 6 - Pearson correlation matrix of the numerical attributes.", 14)
 top_c = ", ".join(f"`{k}` ({v:+.2f})" for k, v in tcorr.head(5).items())
 J(f"The attributes most correlated with the target are {top_c}. No numerical attribute has a strong linear "
   "correlation with the target (all |r| < 0.3), so the relationship is non-linear and depends on combinations of "
-  "features - a hint that tree-based models will work better than linear ones. Strong correlations between predictors "
+  "features - a hint that tree-based models will work better than linear ones. Correlations between predictors "
   "are moderate at most (arrival year vs week number -0.54, weekend vs week nights +0.50, repeated guest vs previous kept bookings +0.42), so multicollinearity is not a major issue.")
 F("01_data_exploration/top_countries.png", "Chart 7 - booking volume and cancellation rate of the ten most frequent countries.")
 J(f"Portugal (PRT) is the dominant origin ({facts['PRT_share_%']}% of the bookings) and has by far the highest cancellation "
@@ -579,7 +579,8 @@ B(["**Accuracy** = (TP + TN) / all - the share of correct predictions. Easy to u
 J("All metrics were computed with `sklearn.metrics` (`accuracy_score`, `precision_score`, `recall_score`, `f1_score`, "
   "`roc_auc_score`, `confusion_matrix`) on the test predictions; specificity was computed from the confusion matrix.")
 H("5.4 Hyper-parameter optimisation", 2)
-J("Each algorithm was first trained with its **default** parameters. Then we searched for better parameters with "
+J("Each algorithm was first trained with its **default** parameters (the library defaults; only for the MLP the team used a "
+  "baseline of two hidden layers (64, 32) with early stopping instead of the scikit-learn default of one layer of 100 neurons). Then we searched for better parameters with "
   "**GridSearchCV**: every combination of the grid below is trained and evaluated with **3-fold cross-validation on the "
   "training set** (the test set is not touched), using ROC-AUC as the score. For KNN, Random Forest and MLP the search was "
   "run on a random subsample of the training set (15,000 / 30,000 / 25,000 rows) to keep the run time acceptable; the best "

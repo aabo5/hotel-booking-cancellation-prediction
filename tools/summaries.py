@@ -14,7 +14,7 @@ SUMMARIES = {
     "SUMMARY_09": """## Summary: feature selection and PCA
 **Feature selection (before vs after)**
 * Six techniques from three families were applied: variance threshold, ANOVA F-test and mutual information (filter), RFE with a Decision Tree (wrapper), L1 logistic regression and LightGBM importance (embedded).
-* With only **50 of 255 features (-80%)** most models keep their performance and train faster.
+* With only **50 of 255 features (-80%)** the F1-score improved in 10 of the 24 model/technique combinations and stayed within the noise level (-0.003) or better in 16 of them; training is faster.
 * **Boosted performance:** RFE (k=50) raised the **Random Forest** F1 from 0.8499 to **0.8574** (accuracy 89.38% -> 89.77%, ROC-AUC 0.9594 -> 0.9615) - the highest F1 of the whole project; LightGBM importance (0.8572) and mutual information (0.8540) gave similar gains. **KNN** improved with mutual information (F1 0.8046 -> 0.8130), ANOVA and L1 selection, because irrelevant dimensions no longer distort its distances.
 * **LightGBM** does not profit (best +0.0002 with the variance threshold): boosting already ignores useless features. ANOVA and L1 (linear criteria) hurt the tree ensembles.
 * Re-ordering the same 255 columns changes LightGBM's F1 by ~0.003, so smaller differences are noise.
