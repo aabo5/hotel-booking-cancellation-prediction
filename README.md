@@ -30,7 +30,7 @@ We predict whether a hotel booking will be cancelled (`is_canceled`) from the in
 ├── results/<notebook>/       every table (CSV) and chart (PNG) of each notebook
 ├── report/                   final report + final presentation (+ progress presentation)
 ├── demo/app.py               desktop demo: cancellation probability of a single booking
-├── src/                      helper modules
+├── src/                      helper modules (src/preprocessing.py reproduces notebook 02 exactly)
 └── tools/                    notebook builder/runner, report & slide generators
 ```
 

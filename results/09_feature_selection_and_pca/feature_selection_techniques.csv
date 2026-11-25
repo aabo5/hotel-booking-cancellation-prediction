@@ -1,7 +1,7 @@
 Technique,Family,Selected features,Selection time (s)
 Variance threshold,Filter,115,0.2
-ANOVA F-test (k=50),Filter,50,0.3
-Mutual information (k=50),Filter,50,3.2
-RFE - Decision Tree (k=50),Wrapper,50,28.1
-L1 Logistic Regression,Embedded,44,2.9
+ANOVA F-test (k=50),Filter,50,0.2
+Mutual information (k=50),Filter,50,2.8
+RFE - Decision Tree (k=50),Wrapper,50,25.6
+L1 Logistic Regression,Embedded,44,2.7
 LightGBM importance (k=50),Embedded,50,0.6

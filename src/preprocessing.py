@@ -7,14 +7,13 @@ Hotel Booking Cancellation Prediction research project.
 Key Responsibilities:
 1. clean_dataset: Cleans real-world anomalies (ghost bookings, extreme ADR outliers)
    and imputes missing values safely.
-2. create_engineered_features: Adds domain-informed engineered features:
+2. create_engineered_features: Adds the 5 engineered features used in notebook 02:
    - total_stay_nights (weekend + week nights)
    - total_guests (adults + children + babies)
-   - is_family (binary flag for bookings with children/babies)
    - has_special_requests (binary indicator of special requests)
    - has_booking_changes (binary indicator of modification history)
-   - has_previous_cancellations (binary indicator of past cancellations)
    - room_type_changed (binary indicator if assigned room != reserved room)
+   (Same pipeline as notebooks/02_data_preprocessing.ipynb -> 255 predictors.)
 3. split_data: Strictly drops target leakage features ('reservation_status',
    'reservation_status_date') and performs stratified train/test partitioning.
 4. build_preprocessor: Builds a Scikit-Learn ColumnTransformer with StandardScaler
@@ -136,11 +135,9 @@ def create_engineered_features(df: pd.DataFrame, verbose: bool = True) -> pd.Dat
     
     1. total_stay_nights: stays_in_weekend_nights + stays_in_week_nights
     2. total_guests: adults + children + babies
-    3. is_family: Binary flag (1 if children > 0 or babies > 0, else 0)
-    4. has_special_requests: Binary flag (1 if total_of_special_requests > 0, else 0)
-    5. has_booking_changes: Binary flag (1 if booking_changes > 0, else 0)
-    6. has_previous_cancellations: Binary flag (1 if previous_cancellations > 0, else 0)
-    7. room_type_changed: Binary flag (1 if reserved_room_type != assigned_room_type, else 0)
+    3. has_special_requests: Binary flag (1 if total_of_special_requests > 0, else 0)
+    4. has_booking_changes: Binary flag (1 if booking_changes > 0, else 0)
+    5. room_type_changed: Binary flag (1 if reserved_room_type != assigned_room_type, else 0)
     
     Parameters:
         df: Cleaned pandas DataFrame.
@@ -161,38 +158,26 @@ def create_engineered_features(df: pd.DataFrame, verbose: bool = True) -> pd.Dat
         df_feat["adults"] + df_feat["children"].fillna(0) + df_feat["babies"]
     ).astype(float)
 
-    # 3. Family indicator
-    df_feat["is_family"] = (
-        (df_feat["children"].fillna(0) > 0) | (df_feat["babies"] > 0)
-    ).astype(int)
-
-    # 4. Special requests indicator
+    # 3. Special requests indicator
     df_feat["has_special_requests"] = (
         df_feat["total_of_special_requests"] > 0
     ).astype(int)
 
-    # 5. Booking changes indicator
+    # 4. Booking changes indicator
     df_feat["has_booking_changes"] = (df_feat["booking_changes"] > 0).astype(int)
 
-    # 6. Previous cancellation indicator
-    df_feat["has_previous_cancellations"] = (
-        df_feat["previous_cancellations"] > 0
-    ).astype(int)
-
-    # 7. Room assignment change indicator (e.g. upgrades, operational reassignments)
+    # 5. Room assignment change indicator (e.g. upgrades, operational reassignments)
     df_feat["room_type_changed"] = (
         df_feat["reserved_room_type"] != df_feat["assigned_room_type"]
     ).astype(int)
 
     if verbose:
         print("=== FEATURE ENGINEERING SUMMARY ===")
-        print("Engineered 7 domain features:")
+        print("Engineered 5 domain features:")
         print("  - total_stay_nights          (weekend + weekday nights)")
         print("  - total_guests               (adults + children + babies)")
-        print(f"  - is_family                  ({df_feat['is_family'].mean()*100:.2f}% family bookings)")
         print(f"  - has_special_requests       ({df_feat['has_special_requests'].mean()*100:.2f}% with requests)")
         print(f"  - has_booking_changes        ({df_feat['has_booking_changes'].mean()*100:.2f}% modified bookings)")
-        print(f"  - has_previous_cancellations ({df_feat['has_previous_cancellations'].mean()*100:.2f}% repeat cancelers)")
         print(f"  - room_type_changed          ({df_feat['room_type_changed'].mean()*100:.2f}% room reassignments)")
         print("===================================")
 
