@@ -1,0 +1,10 @@
+Item,Value
+Rows (bookings),"119,390"
+Columns (attributes),32
+Numerical columns,20
+Categorical / text columns,12
+Target column,is_canceled
+Memory usage (MB),39.7
+Exact duplicate rows,"31,994"
+First arrival,2015-July
+Last arrival,2017-August

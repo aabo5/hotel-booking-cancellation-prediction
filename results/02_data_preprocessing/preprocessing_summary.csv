@@ -1,6 +1,10 @@
 Metric,Value
 Initial Raw Rows,119390
+Ghost bookings removed,180
+ADR errors removed,2
 Cleaned Records,119208
 Training Rows (80%),95366
 Testing Rows (20%),23842
+Numerical features (scaled),24
+Categorical features (one-hot),10
 Total Predictors,255

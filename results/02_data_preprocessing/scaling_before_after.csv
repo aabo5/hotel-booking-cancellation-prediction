@@ -1,0 +1,25 @@
+,mean before,std before,learned mean (scaler),learned std (scaler),mean after,std after
+lead_time,103.953,106.841,103.953,106.84,-0.0,1.0
+arrival_date_year,2016.157,0.707,2016.157,0.707,-0.0,1.0
+arrival_date_week_number,27.122,13.605,27.122,13.605,-0.0,1.0
+arrival_date_day_of_month,15.8,8.785,15.8,8.785,-0.0,1.0
+stays_in_weekend_nights,0.926,0.995,0.926,0.995,0.0,1.0
+stays_in_week_nights,2.497,1.899,2.497,1.899,0.0,1.0
+adults,1.859,0.579,1.859,0.579,0.0,1.0
+children,0.105,0.401,0.105,0.401,0.0,1.0
+babies,0.008,0.1,0.008,0.1,0.0,1.0
+is_repeated_guest,0.032,0.175,0.032,0.175,-0.0,1.0
+previous_cancellations,0.086,0.831,0.086,0.831,-0.0,1.0
+previous_bookings_not_canceled,0.139,1.527,0.139,1.527,-0.0,1.0
+booking_changes,0.218,0.639,0.218,0.639,0.0,1.0
+agent,75.118,107.178,75.118,107.178,-0.0,1.0
+company,10.579,53.359,10.579,53.359,-0.0,1.0
+days_in_waiting_list,2.321,17.474,2.321,17.473,-0.0,1.0
+adr,101.933,47.983,101.933,47.983,0.0,1.0
+required_car_parking_spaces,0.062,0.244,0.062,0.244,0.0,1.0
+total_of_special_requests,0.571,0.793,0.571,0.793,-0.0,1.0
+total_stay_nights,3.423,2.541,3.423,2.541,0.0,1.0
+total_guests,1.972,0.724,1.972,0.724,0.0,1.0
+has_special_requests,0.41,0.492,0.41,0.492,-0.0,1.0
+has_booking_changes,0.15,0.358,0.15,0.358,0.0,1.0
+room_type_changed,0.125,0.33,0.125,0.33,-0.0,1.0

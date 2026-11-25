@@ -1,4 +1,12 @@
-Method,Feature Count,Accuracy,ROC-AUC
-All 257 Features,257,0.8780723093700193,0.9515866662725512
-Top 50 Selected Features,50,0.8759751698682996,0.9513635851569716
-30 PCA Components,30,0.854458518580656,0.9307407881060805
+Setting,Features,Accuracy,Precision,Recall,F1-Score,ROC-AUC,Train time (s)
+All features,255,0.8937,0.8701,0.8383,0.8539,0.9623,1.45
+Variance threshold,115,0.8937,0.8693,0.8395,0.8541,0.9624,1.95
+ANOVA F-test (k=50),50,0.8777,0.854,0.8081,0.8305,0.9526,1.63
+Mutual information (k=50),50,0.8898,0.8646,0.8334,0.8487,0.9601,1.38
+RFE - Decision Tree (k=50),50,0.892,0.8704,0.8326,0.8511,0.9618,1.24
+L1 Logistic Regression,44,0.8859,0.8639,0.8216,0.8422,0.9559,1.4
+LightGBM importance (k=50),50,0.8928,0.8694,0.8365,0.8526,0.9616,1.64
+PCA 10 components (59.4% variance),10,0.8455,0.8482,0.7104,0.7732,0.9104,1.54
+PCA 25 components (90.6% variance),25,0.8716,0.8635,0.7764,0.8176,0.942,1.47
+PCA 30 components (93.3% variance),30,0.8742,0.8627,0.7857,0.8224,0.9456,2.42
+PCA 35 components (95.1% variance),35,0.8751,0.8676,0.7827,0.823,0.9462,1.84

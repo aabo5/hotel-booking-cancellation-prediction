@@ -1,0 +1,11 @@
+Categorical feature,Categories (= new 0/1 columns)
+hotel,2
+arrival_date_month,12
+meal,5
+country,172
+market_segment,8
+distribution_channel,5
+reserved_room_type,9
+assigned_room_type,11
+deposit_type,3
+customer_type,4

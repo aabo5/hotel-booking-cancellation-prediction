@@ -1,0 +1,21 @@
+Setting,Features,Model,Accuracy,Precision,Recall,F1-Score,ROC-AUC,Train time (s),Delta F1 vs all,Delta AUC vs all
+All features,255,Decision Tree,0.8671,0.8419,0.79,0.8151,0.9387,1.82,0.0,0.0
+All features,255,KNN,0.8603,0.8355,0.7759,0.8046,0.9309,0.19,0.0,0.0
+All features,255,Random Forest,0.8938,0.8934,0.8104,0.8499,0.9594,4.97,0.0,0.0
+All features,255,LightGBM,0.8937,0.8701,0.8383,0.8539,0.9623,1.45,0.0,0.0
+PCA 10 components (59.4% variance),10,Decision Tree,0.8048,0.7626,0.6877,0.7232,0.8627,1.26,-0.0919,-0.076
+PCA 10 components (59.4% variance),10,KNN,0.8449,0.823,0.7408,0.7798,0.912,0.28,-0.0248,-0.0189
+PCA 10 components (59.4% variance),10,Random Forest,0.8578,0.8645,0.7311,0.7922,0.9229,5.52,-0.0576,-0.0365
+PCA 10 components (59.4% variance),10,LightGBM,0.8455,0.8482,0.7104,0.7732,0.9104,1.54,-0.0807,-0.0519
+PCA 25 components (90.6% variance),25,Decision Tree,0.8271,0.7841,0.7363,0.7595,0.8854,2.62,-0.0557,-0.0532
+PCA 25 components (90.6% variance),25,KNN,0.8552,0.8366,0.7575,0.7951,0.9254,0.11,-0.0096,-0.0055
+PCA 25 components (90.6% variance),25,Random Forest,0.8751,0.8889,0.7578,0.8181,0.9423,9.16,-0.0317,-0.0171
+PCA 25 components (90.6% variance),25,LightGBM,0.8716,0.8635,0.7764,0.8176,0.942,1.47,-0.0363,-0.0202
+PCA 30 components (93.3% variance),30,Decision Tree,0.8284,0.7838,0.7419,0.7622,0.8895,3.34,-0.0529,-0.0492
+PCA 30 components (93.3% variance),30,KNN,0.8592,0.8399,0.7665,0.8015,0.9301,0.13,-0.0031,-0.0008
+PCA 30 components (93.3% variance),30,Random Forest,0.8769,0.8853,0.7675,0.8222,0.9463,10.06,-0.0276,-0.0131
+PCA 30 components (93.3% variance),30,LightGBM,0.8742,0.8627,0.7857,0.8224,0.9456,2.42,-0.0315,-0.0167
+PCA 35 components (95.1% variance),35,Decision Tree,0.8287,0.7866,0.7385,0.7618,0.8885,4.16,-0.0534,-0.0501
+PCA 35 components (95.1% variance),35,KNN,0.8581,0.8371,0.7663,0.8001,0.9296,0.11,-0.0045,-0.0013
+PCA 35 components (95.1% variance),35,Random Forest,0.8772,0.8886,0.7646,0.822,0.9466,9.81,-0.0279,-0.0128
+PCA 35 components (95.1% variance),35,LightGBM,0.8751,0.8676,0.7827,0.823,0.9462,1.84,-0.031,-0.0161

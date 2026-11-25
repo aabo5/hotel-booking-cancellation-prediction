@@ -1,0 +1,11 @@
+Setting,Model,Features,F1-Score,Delta F1 vs all,Delta Acc vs all,Delta AUC vs all
+Mutual information (k=50),KNN,50,0.813,0.0084,0.0049,0.0036
+RFE - Decision Tree (k=50),Random Forest,50,0.8574,0.0075,0.0038,0.002
+LightGBM importance (k=50),Random Forest,50,0.8572,0.0074,0.0034,0.0038
+ANOVA F-test (k=50),KNN,50,0.8116,0.0069,0.0029,-0.001
+L1 Logistic Regression,KNN,44,0.8113,0.0067,0.0047,0.0046
+Mutual information (k=50),Random Forest,50,0.854,0.0041,0.0011,0.0014
+Variance threshold,Random Forest,115,0.854,0.0041,0.0023,0.0015
+LightGBM importance (k=50),KNN,50,0.8078,0.0032,0.0022,0.0041
+Mutual information (k=50),Decision Tree,50,0.817,0.0019,0.0014,0.0007
+Variance threshold,LightGBM,115,0.8541,0.0002,0.0,0.0001

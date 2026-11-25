@@ -1,0 +1,5 @@
+Method,Rows flagged,% of data,Cancellation rate of flagged rows
+IQR rule (any feature),63855,53.566,0.35
+Z-score > 3 (any feature),21750,18.245,0.263
+Isolation Forest (1%),1193,1.001,0.128
+All data,119208,100.0,0.371
